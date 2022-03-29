@@ -143,8 +143,6 @@ export const LogsPreviewer: React.FC<Props> = ({
   return (
     <div className="h-full flex flex-col flex-grow">
       <PreviewFilterPanel
-        isShowingEventChart={showChart}
-        onToggleEventChart={() => setShowChart(!showChart)}
         isLoading={isLoading}
         newCount={newCount}
         templates={TEMPLATES.filter(
@@ -179,19 +177,26 @@ export const LogsPreviewer: React.FC<Props> = ({
         }
       >
         <div className={condensedLayout ? 'px-4' : ''}>
-          {showChart && <LogEventChart
-            data={!isLoading ? logData : undefined}
-            onBarClick={(timestampMicro) => {
-              handleSearch({ query: filters.search_query, toMicro: timestampMicro })
-            }}
-          />}
+          {showChart && (
+            <LogEventChart
+              data={!isLoading ? logData : undefined}
+              onBarClick={(timestampMicro) => {
+                handleSearch({ query: filters.search_query, toMicro: timestampMicro })
+              }}
+            />
+          )}
         </div>
       </div>
       <div className="flex flex-col flex-grow relative pt-4">
         {isLoading && <div className="logs-shimmering-loader w-full h-0.5"></div>}
         <ShimmerLine active={isLoading} />
         <LoadingOpacity active={isLoading}>
-          <LogTable data={logData} queryType={queryType} />
+          <LogTable
+            data={logData}
+            queryType={queryType}
+            isHistogramShowing={showChart}
+            onHistogramToggle={() => setShowChart(!showChart)}
+          />
         </LoadingOpacity>
         <div className="p-2">
           <Button onClick={() => loadOlder()} icon={<IconRewind />} type="default">
