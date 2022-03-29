@@ -147,7 +147,6 @@ export const LogsPreviewer: React.FC<Props> = ({
       <PreviewFilterPanel
         isShowingEventChart={showChart}
         onToggleEventChart={() => setShowChart(!showChart)}
-        isCustomQuery={false}
         isLoading={isLoading}
         newCount={newCount}
         templates={TEMPLATES.filter(
@@ -166,7 +165,7 @@ export const LogsPreviewer: React.FC<Props> = ({
             ? dayjs(Number(oldestTimestamp) / 1000).toISOString()
             : ''
         }
-        onCustomClick={() => {
+        onExploreClick={() => {
           router.push(`/project/${projectRef}/logs-explorer?q=${params.rawSql}`)
         }}
         onSelectTemplate={onSelectTemplate}
@@ -182,12 +181,12 @@ export const LogsPreviewer: React.FC<Props> = ({
         }
       >
         <div className={condensedLayout ? 'px-4' : ''}>
-          <LogEventChart
+          {showChart && <LogEventChart
             data={!isLoading ? logData : undefined}
             onBarClick={(timestampMicro) => {
               handleSearch({ query: filters.search_query, toMicro: timestampMicro })
             }}
-          />
+          />}
         </div>
       </div>
       <div className="flex flex-col flex-grow relative pt-4">
