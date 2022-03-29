@@ -163,7 +163,7 @@ export const LogsPreviewer: React.FC<Props> = ({
             ? dayjs(Number(oldestTimestamp) / 1000).toISOString()
             : ''
         }
-        onCustomClick={() => {
+        onExploreClick={() => {
           router.push(`/project/${projectRef}/logs-explorer?q=${params.rawSql}`)
         }}
         onSelectTemplate={onSelectTemplate}
