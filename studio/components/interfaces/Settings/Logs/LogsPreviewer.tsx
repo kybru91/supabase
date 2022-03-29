@@ -145,8 +145,6 @@ export const LogsPreviewer: React.FC<Props> = ({
   return (
     <div className="h-full flex flex-col flex-grow">
       <PreviewFilterPanel
-        isShowingEventChart={showChart}
-        onToggleEventChart={() => setShowChart(!showChart)}
         isLoading={isLoading}
         newCount={newCount}
         templates={TEMPLATES.filter(
@@ -194,7 +192,12 @@ export const LogsPreviewer: React.FC<Props> = ({
       <div className="flex flex-col flex-grow relative pt-4">
         <ShimmerLine active={isLoading} />
         <LoadingOpacity active={isLoading}>
-          <LogTable data={logData} queryType={queryType} />
+          <LogTable
+            data={logData}
+            queryType={queryType}
+            isHistogramShowing={showChart}
+            onHistogramToggle={() => setShowChart(!showChart)}
+          />
         </LoadingOpacity>
         <div className="p-2">
           <Button onClick={() => loadOlder()} icon={<IconRewind />} type="default">
