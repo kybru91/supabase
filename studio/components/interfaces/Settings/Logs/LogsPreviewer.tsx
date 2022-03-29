@@ -145,7 +145,6 @@ export const LogsPreviewer: React.FC<Props> = ({
       <PreviewFilterPanel
         isShowingEventChart={showChart}
         onToggleEventChart={() => setShowChart(!showChart)}
-        isCustomQuery={false}
         isLoading={isLoading}
         newCount={newCount}
         templates={TEMPLATES.filter(
