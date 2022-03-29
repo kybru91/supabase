@@ -11,12 +11,22 @@ export const LogPage: NextPage = () => {
   const router = useRouter()
   const { ref, source } = router.query
 
+  // quick fix to get correct queryType
+  const queryType = {
+    edge_logs: 'api',
+    postgres_logs: 'database',
+    function_logs: 'functions',
+    function_edge_logs: 'fn_edge',
+  }
+
   return (
     <LogsExplorerLayout subtitle={<span className="font-mono">{source}</span>}>
       <LogsPreviewer
         projectRef={ref as string}
-        condensedLayout={true}
+        condensedLayout={false}
         tableName={source as LogsTableName}
+        // @ts-ignore
+        queryType={queryType[source]}
       />
     </LogsExplorerLayout>
   )
