@@ -4,8 +4,11 @@ description: Different approaches for tracking visitor counts with PostgreSQL.
 author: victor
 image: seen-by/seen-by-postgresql-thumb.png
 thumb: seen-by/seen-by-postgresql-thumb.png
+categories:
+  - postgres
 tags:
   - postgres
+  - planetpg
 date: '2022-07-18'
 toc_depth: 3
 ---
@@ -442,17 +445,16 @@ A likely requirement from the original scenario that we've completely ignored is
 In SQL:
 
 ```sql hideCopy
-BEGIN;
+begin;
 
-CREATE TABLE posts_seen_by_users (
-  post_id bigint REFERENCES posts(id),
-  user_id bigint REFERENCES users(id),
-  seen_count bigint NOT NULL DEFAULT 0 CHECK (seen_count > 0),
-
-  PRIMARY KEY (post_id, user_id)
+create table posts_seen_by_users (
+  post_id bigint references posts (id),
+  user_id bigint references users (id),
+  seen_count bigint not null default 0 check (seen_count > 0),
+  primary key (post_id, user_id)
 );
 
-COMMIT;
+commit;
 ```
 
 #### Caveats
@@ -536,11 +538,11 @@ Average is coming in at `2.50ms` which is 16% slower than simple-hstore and 21% 
 
 We'll just draw [the rest of the owl][kym-rest-of-owl] now.
 
-What's [HyperLogLog][wiki-hll] you ask? Well it's just a probablistic data structure! Don't worry if you've never heard of it before, it's a reasonably advanced concept.
+What's [HyperLogLog][wiki-hll] you ask? Well it's just a probabilistic data structure! Don't worry if you've never heard of it before, it's a reasonably advanced concept.
 
 You may have heard of [Bloom Filters][wiki-bloom-filter] and they're _somewhat_ related but they're not quite a great fit for the problem we're solving since we want to know how many people have seen a particular post. Knowing whether one user has seen a particular post is useful too -- but not quite what we're solving for here (and we'd have to double-check our false positives anyway if we wanted to be absolutely sure).
 
-HyperLogLog provides a probablistic data structure that is good at counting _distinct_ entries, so that means that the count _will not_ be exact, but be reasonably close (depending on how we tune). We won't have false positives (like with a bloom filter) -- we'll have a degree of error (i.e. the actual count may be 1000, but the HLL reports 1004).
+HyperLogLog provides a probabilistic data structure that is good at counting _distinct_ entries, so that means that the count _will not_ be exact, but be reasonably close (depending on how we tune). We won't have false positives (like with a bloom filter) -- we'll have a degree of error (i.e. the actual count may be 1000, but the HLL reports 1004).
 
 We have to take this into account on the UI side but and maybe retrieve the full count if anyone ever _really_ needs to know/view individual users that have seen the content, so we can fall back to our association table there.
 
@@ -705,12 +707,12 @@ As usual, Postgres has the tools to solve the problem _reasonably_ well (if not 
 
 ## More Postgres resources
 
-- [Partial data dumps using Postgres Row Level Security](https://supabase.com/blog/2022/06/28/partial-postgresql-data-dumps-with-rls)
-- [Postgres Views](https://supabase.com/blog/2020/11/18/postgresql-views)
-- [Postgres Auditing in 150 lines of SQL](https://supabase.com/blog/2022/03/08/audit)
-- [Cracking PostgreSQL Interview Questions](https://supabase.com/blog/2021/02/27/cracking-postgres-interview)
-- [What are PostgreSQL Templates?](https://supabase.com/blog/2020/07/09/postgresql-templates)
-- [Realtime Postgres RLS on Supabase](https://supabase.com/blog/2021/12/01/realtime-row-level-security-in-postgresql)
+- [Partial data dumps using Postgres Row Level Security](https://supabase.com/blog/partial-postgresql-data-dumps-with-rls)
+- [Postgres Views](https://supabase.com/blog/postgresql-views)
+- [Postgres Auditing in 150 lines of SQL](https://supabase.com/blog/audit)
+- [Cracking PostgreSQL Interview Questions](https://supabase.com/blog/cracking-postgres-interview)
+- [What are PostgreSQL Templates?](https://supabase.com/blog/postgresql-templates)
+- [Realtime Postgres RLS on Supabase](https://supabase.com/blog/realtime-row-level-security-in-postgresql)
 
 [pew-twitter-user-stats]: https://www.pewresearch.org/internet/2019/04/24/sizing-up-twitter-users/
 [k6]: https://k6.io
@@ -732,7 +734,7 @@ As usual, Postgres has the tools to solve the problem _reasonably_ well (if not 
 [pg-gin]: https://www.postgresql.org/docs/14/indexes-types.html#INDEXES-TYPES-GIN
 [wiki-muri]: https://en.wikipedia.org/wiki/Muri_(Japanese_term)
 [lz4]: https://github.com/lz4/lz4
-[clickhouse]: clickhouse.tech/
+[clickhouse]: https://clickhouse.com
 [wiki-bloom-filter]: https://en.wikipedia.org/wiki/Bloom_filter
 [wiki-hll]: https://en.wikipedia.org/wiki/HyperLogLog
 [pg-cron]: https://github.com/citusdata/pg_cron
