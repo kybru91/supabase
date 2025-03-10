@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Alert, StyleSheet, View } from 'react-native'
 import { supabase } from '../lib/supabase'
-import { Button, Input } from 'react-native-elements'
+import { Button, Input } from '@rneui/themed'
 
 export default function Auth() {
   const [email, setEmail] = useState('')
@@ -10,7 +10,8 @@ export default function Auth() {
 
   async function signInWithEmail() {
     setLoading(true)
-    const { user, error } = await supabase.auth.signIn({
+    console.log({ email, password })
+    const { error } = await supabase.auth.signInWithPassword({
       email: email,
       password: password,
     })
@@ -21,7 +22,7 @@ export default function Auth() {
 
   async function signUpWithEmail() {
     setLoading(true)
-    const { user, error } = await supabase.auth.signUp({
+    const { error } = await supabase.auth.signUp({
       email: email,
       password: password,
     })
